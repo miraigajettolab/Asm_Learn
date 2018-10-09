@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <iostream.h>
+#include <dos.h>
+#include <conio.h>
+
+
+void interrupt (*old)(...);
+
+long long x;
+void interrupt left(...)
+{
+  asm{
+    lea si, x
+    mov ax, [si]
+    mov dx, [si+4]
+    dec ax
+    mov cx,0
+    adc cx,0
+    sub ax,cx
+    mov [si],ax
+    mov [si+4],dx
+    }
+}
+void interrupt (*old2)(...);
+void interrupt division(...)
+{
+  asm{
+    mov ax,2
+    add [bp+18],ax
+  }
+}
+
+int main(void)
+{
+  clrscr();
+  old = getvect(0xf0);
+  disable();
+  setvect(0xf0,left);
+  enable();
+  int i;
+  int aa;
+  for(i= 0; i <= 5; i += 1)
+  {
+    x = i;
+    cout << x;
+    geninterrupt(0xf0);
+    printf(" -> %d\n", x);
+    getch();
+  }
+
+  setvect(0xf0, old);
+  old2=getvect(0x00);
+  disable();
+  setvect(0x00, division);
+  enable();
+  geninterrupt(0x00);
+  setvect(0x00, old2);
+  return 0 ;
+}

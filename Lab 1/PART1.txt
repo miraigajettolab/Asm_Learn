@@ -1,0 +1,12 @@
+sub ax,bx   // 2BC3
+sub bx,ax   // 2BD8
+sub ax,[bx] // 2B07
+
+xor ax, bx  // 33C3
+xor bx, ax  // 33D8
+xor ax, 01  // 350100
+
+jl 01       // 0F8CFDFE
+
+rol ax,1    // D1C0
+rol ax, cl  // D3C0
